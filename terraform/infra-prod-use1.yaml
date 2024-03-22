@@ -46,7 +46,7 @@ database_subnets:
     name: databaseb-ecs-01
     map_public_ip_on_launch: false   
     nat_gateway: subnetb
-
+public_nacl_name: public-network-01
 public_nacl_rules:
 #Inbound Rules
   inboundrule1:
@@ -82,7 +82,7 @@ public_nacl_rules:
     egress: true
     from: -1
     to: -1
-
+application_nacl_name: application-network-01
 application_nacl_rules:
 #Inbound Rules
   inboundrule1:
@@ -134,7 +134,7 @@ application_nacl_rules:
     egress: true
     from: -1
     to: -1
-
+database_nacl_name: database-network-01
 database_nacl_rules:
 #Inbound Rules
   inboundrule1:
