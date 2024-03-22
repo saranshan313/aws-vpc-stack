@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      - feature/staging
+      - staging
     paths:
       - terraform/**
   pull_request:
@@ -21,7 +21,7 @@ permissions:
  
 jobs:
  infra-staging-use1:
-   if: github.ref == 'refs/heads/feature/staging' || github.event_name == 'pull_request'
+   if: github.ref == 'refs/heads/staging' || github.event_name == 'pull_request'
    #name: 'Terraform Infrastructure Change Management - ${{ vars.ENVIRONMENT }}'
    runs-on: ubuntu-latest
    environment: infra-staging-use1
