@@ -1,19 +1,19 @@
-output "ecs_vpc_id" {
+output "network_vpc_id" {
   description = "Id of the VPC"
-  value       = try(aws_vpc.ecs_vpc.id, null)
+  value       = try(aws_vpc.network_vpc.id, null)
 }
 
-output "ecs_public_subnets" {
+output "network_public_subnets" {
   description = "Id of the public subnets"
-  value       = try({ for k, v in aws_subnet.ecs_public_subnets : k => v.id }, null)
+  value       = try({ for k, v in aws_subnet.network_public_subnets : k => v.id }, null)
 }
 
-output "ecs_application_subnets" {
+output "network_application_subnets" {
   description = "Id of the application subnets"
-  value       = try({ for k, v in aws_subnet.ecs_application_subnets : k => v.id }, null)
+  value       = try({ for k, v in aws_subnet.network_application_subnets : k => v.id }, null)
 }
 
-output "ecs_database_subnets" {
+output "network_database_subnets" {
   description = "Id of the database subnets"
-  value       = try({ for k, v in aws_subnet.ecs_database_subnets : k => v.id }, null)
+  value       = try({ for k, v in aws_subnet.network_database_subnets : k => v.id }, null)
 }

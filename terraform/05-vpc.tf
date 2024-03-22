@@ -1,5 +1,5 @@
 #VPC
-resource "aws_vpc" "ecs_vpc" {
+resource "aws_vpc" "network_vpc" {
   cidr_block = local.settings.vpc_cidr_range
 
   enable_dns_support   = local.settings.enable_dns_support
@@ -13,8 +13,8 @@ resource "aws_vpc" "ecs_vpc" {
 }
 
 #Internet Gateway and Attachment
-resource "aws_internet_gateway" "ecs_igw" {
-  vpc_id = aws_vpc.ecs_vpc.id
+resource "aws_internet_gateway" "network_igw" {
+  vpc_id = aws_vpc.network_vpc.id
 
   tags = merge(
     local.tags,
@@ -24,9 +24,9 @@ resource "aws_internet_gateway" "ecs_igw" {
 }
 
 #Public Subnets
-resource "aws_subnet" "ecs_public_subnets" {
+resource "aws_subnet" "network_public_subnets" {
   for_each                = local.settings.public_subnets
-  vpc_id                  = aws_vpc.ecs_vpc.id
+  vpc_id                  = aws_vpc.network_vpc.id
   cidr_block              = each.value["cidr"]
   availability_zone       = each.value["availability_zone"]
   map_public_ip_on_launch = each.value["map_public_ip_on_launch"]
@@ -39,9 +39,9 @@ resource "aws_subnet" "ecs_public_subnets" {
 }
 
 #Application Subnets
-resource "aws_subnet" "ecs_application_subnets" {
+resource "aws_subnet" "network_application_subnets" {
   for_each                = local.settings.application_subnets
-  vpc_id                  = aws_vpc.ecs_vpc.id
+  vpc_id                  = aws_vpc.network_vpc.id
   cidr_block              = each.value["cidr"]
   availability_zone       = each.value["availability_zone"]
   map_public_ip_on_launch = each.value["map_public_ip_on_launch"]
@@ -54,9 +54,9 @@ resource "aws_subnet" "ecs_application_subnets" {
 }
 
 #Database Subnets
-resource "aws_subnet" "ecs_database_subnets" {
+resource "aws_subnet" "network_database_subnets" {
   for_each                = local.settings.database_subnets
-  vpc_id                  = aws_vpc.ecs_vpc.id
+  vpc_id                  = aws_vpc.network_vpc.id
   cidr_block              = each.value["cidr"]
   availability_zone       = each.value["availability_zone"]
   map_public_ip_on_launch = each.value["map_public_ip_on_launch"]
@@ -70,7 +70,7 @@ resource "aws_subnet" "ecs_database_subnets" {
 
 
 # Elastic IPs and NAT Gateways
-resource "aws_eip" "ecs_eip" {
+resource "aws_eip" "network_eip" {
   for_each = local.settings.public_subnets
   domain   = "vpc"
 
@@ -81,10 +81,10 @@ resource "aws_eip" "ecs_eip" {
   })
 }
 
-resource "aws_nat_gateway" "ecs_natgw" {
+resource "aws_nat_gateway" "network_natgw" {
   for_each      = local.settings.public_subnets
-  allocation_id = aws_eip.ecs_eip[each.key].id
-  subnet_id     = aws_subnet.ecs_public_subnets[each.key].id
+  allocation_id = aws_eip.network_eip[each.key].id
+  subnet_id     = aws_subnet.network_public_subnets[each.key].id
 
   tags = merge(
     local.tags,
@@ -94,9 +94,9 @@ resource "aws_nat_gateway" "ecs_natgw" {
 }
 
 # Public Subnets Route Tables, Routes and Associations
-resource "aws_route_table" "ecs_public" {
+resource "aws_route_table" "network_public" {
   for_each = local.settings.public_subnets
-  vpc_id   = aws_vpc.ecs_vpc.id
+  vpc_id   = aws_vpc.network_vpc.id
 
   tags = merge(
     local.tags,
@@ -105,23 +105,23 @@ resource "aws_route_table" "ecs_public" {
   })
 }
 
-resource "aws_route_table_association" "ecs_public" {
+resource "aws_route_table_association" "network_public" {
   for_each       = local.settings.public_subnets
-  subnet_id      = aws_subnet.ecs_public_subnets[each.key].id
-  route_table_id = aws_route_table.ecs_public[each.key].id
+  subnet_id      = aws_subnet.network_public_subnets[each.key].id
+  route_table_id = aws_route_table.network_public[each.key].id
 }
 
-resource "aws_route" "ecs_public" {
+resource "aws_route" "network_public" {
   for_each               = local.settings.public_subnets
-  route_table_id         = aws_route_table.ecs_public[each.key].id
+  route_table_id         = aws_route_table.network_public[each.key].id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.ecs_igw.id
+  gateway_id             = aws_internet_gateway.network_igw.id
 }
 
 # Application Subnets Route Tables, Routes and Associations
-resource "aws_route_table" "ecs_application" {
+resource "aws_route_table" "network_application" {
   for_each = local.settings.application_subnets
-  vpc_id   = aws_vpc.ecs_vpc.id
+  vpc_id   = aws_vpc.network_vpc.id
 
   tags = merge(
     local.tags,
@@ -130,23 +130,23 @@ resource "aws_route_table" "ecs_application" {
   })
 }
 
-resource "aws_route_table_association" "ecs_application" {
+resource "aws_route_table_association" "network_application" {
   for_each       = local.settings.application_subnets
-  subnet_id      = aws_subnet.ecs_application_subnets[each.key].id
-  route_table_id = aws_route_table.ecs_application[each.key].id
+  subnet_id      = aws_subnet.network_application_subnets[each.key].id
+  route_table_id = aws_route_table.network_application[each.key].id
 }
 
-resource "aws_route" "ecs_application" {
+resource "aws_route" "network_application" {
   for_each               = local.settings.application_subnets
-  route_table_id         = aws_route_table.ecs_application[each.key].id
+  route_table_id         = aws_route_table.network_application[each.key].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.ecs_natgw["public_${each.value["nat_gateway"]}"].id
+  nat_gateway_id         = aws_nat_gateway.network_natgw["public_${each.value["nat_gateway"]}"].id
 }
 
 # database Subnets Route Tables, Routes and Associations
-resource "aws_route_table" "ecs_database" {
+resource "aws_route_table" "network_database" {
   for_each = local.settings.database_subnets
-  vpc_id   = aws_vpc.ecs_vpc.id
+  vpc_id   = aws_vpc.network_vpc.id
 
   tags = merge(
     local.tags,
@@ -155,39 +155,39 @@ resource "aws_route_table" "ecs_database" {
   })
 }
 
-resource "aws_route_table_association" "ecs_database" {
+resource "aws_route_table_association" "network_database" {
   for_each       = local.settings.database_subnets
-  subnet_id      = aws_subnet.ecs_database_subnets[each.key].id
-  route_table_id = aws_route_table.ecs_database[each.key].id
+  subnet_id      = aws_subnet.network_database_subnets[each.key].id
+  route_table_id = aws_route_table.network_database[each.key].id
 }
 
-resource "aws_route" "ecs_database" {
+resource "aws_route" "network_database" {
   for_each               = local.settings.database_subnets
-  route_table_id         = aws_route_table.ecs_database[each.key].id
+  route_table_id         = aws_route_table.network_database[each.key].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.ecs_natgw["public_${each.value["nat_gateway"]}"].id
+  nat_gateway_id         = aws_nat_gateway.network_natgw["public_${each.value["nat_gateway"]}"].id
 }
 
 # Public Network ACL, associations and Rules
-resource "aws_network_acl" "ecs_public_nacl" {
-  vpc_id = aws_vpc.ecs_vpc.id
+resource "aws_network_acl" "network_public_nacl" {
+  vpc_id = aws_vpc.network_vpc.id
 
   tags = merge(
     local.tags,
     {
-      Name = "nacl-${local.settings.env}-${local.settings.region}-public-ecs-01"
+      Name = "nacl-${local.settings.env}-${local.settings.region}-${local.settings.public_nacl_name}"
   })
 }
 
-resource "aws_network_acl_association" "ecs_public_nacl" {
+resource "aws_network_acl_association" "network_public_nacl" {
   for_each       = local.settings.public_subnets
-  network_acl_id = aws_network_acl.ecs_public_nacl.id
-  subnet_id      = aws_subnet.ecs_public_subnets[each.key].id
+  network_acl_id = aws_network_acl.network_public_nacl.id
+  subnet_id      = aws_subnet.network_public_subnets[each.key].id
 }
 
-resource "aws_network_acl_rule" "ecs_public_nacl" {
+resource "aws_network_acl_rule" "network_public_nacl" {
   for_each       = local.settings.public_nacl_rules
-  network_acl_id = aws_network_acl.ecs_public_nacl.id
+  network_acl_id = aws_network_acl.network_public_nacl.id
   rule_number    = each.value["number"]
   egress         = each.value["egress"]
   protocol       = each.value["protocol"]
@@ -198,25 +198,25 @@ resource "aws_network_acl_rule" "ecs_public_nacl" {
 }
 
 # Application Network ACL, associations and Rules
-resource "aws_network_acl" "ecs_application_nacl" {
-  vpc_id = aws_vpc.ecs_vpc.id
+resource "aws_network_acl" "network_application_nacl" {
+  vpc_id = aws_vpc.network_vpc.id
 
   tags = merge(
     local.tags,
     {
-      Name = "nacl-${local.settings.env}-${local.settings.region}-application-ecs-01"
+      Name = "nacl-${local.settings.env}-${local.settings.region}-${local.settings.application_nacl_name}"
   })
 }
 
-resource "aws_network_acl_association" "ecs_application_nacl" {
+resource "aws_network_acl_association" "network_application_nacl" {
   for_each       = local.settings.application_subnets
-  network_acl_id = aws_network_acl.ecs_application_nacl.id
-  subnet_id      = aws_subnet.ecs_application_subnets[each.key].id
+  network_acl_id = aws_network_acl.network_application_nacl.id
+  subnet_id      = aws_subnet.network_application_subnets[each.key].id
 }
 
-resource "aws_network_acl_rule" "ecs_application_nacl" {
+resource "aws_network_acl_rule" "network_application_nacl" {
   for_each       = local.settings.application_nacl_rules
-  network_acl_id = aws_network_acl.ecs_application_nacl.id
+  network_acl_id = aws_network_acl.network_application_nacl.id
   rule_number    = each.value["number"]
   egress         = each.value["egress"]
   protocol       = each.value["protocol"]
@@ -227,25 +227,25 @@ resource "aws_network_acl_rule" "ecs_application_nacl" {
 }
 
 # Database Network ACL, associations and Rules
-resource "aws_network_acl" "ecs_database_nacl" {
-  vpc_id = aws_vpc.ecs_vpc.id
+resource "aws_network_acl" "network_database_nacl" {
+  vpc_id = aws_vpc.network_vpc.id
 
   tags = merge(
     local.tags,
     {
-      Name = "nacl-${local.settings.env}-${local.settings.region}-database-ecs-01"
+      Name = "nacl-${local.settings.env}-${local.settings.region}-${local.settings.database_nacl_name}"
   })
 }
 
-resource "aws_network_acl_association" "ecs_database_nacl" {
+resource "aws_network_acl_association" "network_database_nacl" {
   for_each       = local.settings.database_subnets
-  network_acl_id = aws_network_acl.ecs_database_nacl.id
-  subnet_id      = aws_subnet.ecs_database_subnets[each.key].id
+  network_acl_id = aws_network_acl.network_database_nacl.id
+  subnet_id      = aws_subnet.network_database_subnets[each.key].id
 }
 
-resource "aws_network_acl_rule" "ecs_database_nacl" {
+resource "aws_network_acl_rule" "network_database_nacl" {
   for_each       = local.settings.database_nacl_rules
-  network_acl_id = aws_network_acl.ecs_database_nacl.id
+  network_acl_id = aws_network_acl.network_database_nacl.id
   rule_number    = each.value["number"]
   egress         = each.value["egress"]
   protocol       = each.value["protocol"]
