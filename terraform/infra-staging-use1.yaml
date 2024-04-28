@@ -128,7 +128,7 @@ application_nacl_rules:
   inboundrule6:
     number: 600
     action: allow
-    protocol: 6
+    protocol: -1
     cidr: 10.0.3.0/24
     egress: false
     from: -1
@@ -136,7 +136,7 @@ application_nacl_rules:
   inboundrule7:
     number: 700
     action: allow
-    protocol: 6
+    protocol: -1
     cidr: 10.0.4.0/24
     egress: false
     from: -1
@@ -180,7 +180,7 @@ database_nacl_rules:
   inboundrule4:
     number: 400
     action: allow
-    protocol: 6
+    protocol: -1
     cidr: 10.0.5.0/24
     egress: false
     from: -1
@@ -188,7 +188,7 @@ database_nacl_rules:
   inboundrule5:
     number: 500
     action: allow
-    protocol: 6
+    protocol: -1
     cidr: 10.0.6.0/24
     egress: false
     from: -1
