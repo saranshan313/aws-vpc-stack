@@ -1,6 +1,7 @@
 locals {
   regions = {
-    "use1" = "us-east-1"
+    "use1"  = "us-east-1"
+    "apse2" = "ap-southeast-2"
   }
   settings = yamldecode(file("${var.TFC_WORKSPACE_NAME}.yaml"))
 

@@ -1,0 +1,204 @@
+region: apse2
+env: staging
+
+#ECS VPC attributes
+vpc_cidr_range: 10.0.0.0/16
+enable_dns_support: true
+enable_dns_hostnames: true
+vpc_name: ecs-01
+
+public_subnets:
+  public_subneta:
+    cidr: 10.0.1.0/24
+    availability_zone: us-east-1a
+    name: publica-ecs-01
+    map_public_ip_on_launch: true
+  public_subnetb:
+    cidr: 10.0.2.0/24
+    availability_zone: us-east-1b
+    name: publicb-ecs-01
+    map_public_ip_on_launch: true
+
+application_subnets:
+  application_subneta:
+    cidr: 10.0.3.0/24
+    availability_zone: us-east-1a
+    name: applicationa-ecs-01
+    map_public_ip_on_launch: false
+    nat_gateway: subneta
+  application_subnetb:
+    cidr: 10.0.4.0/24
+    availability_zone: us-east-1b
+    name: applicationb-ecs-01
+    map_public_ip_on_launch: false
+    nat_gateway: subnetb
+
+database_subnets:
+  database_subneta:
+    cidr: 10.0.5.0/24
+    availability_zone: us-east-1a
+    name: databasea-ecs-01
+    map_public_ip_on_launch: false
+    nat_gateway: subneta
+  database_subnetb:
+    cidr: 10.0.6.0/24
+    availability_zone: us-east-1b
+    name: databaseb-ecs-01
+    map_public_ip_on_launch: false
+    nat_gateway: subnetb
+public_nacl_name: public-network-01
+public_nacl_rules:
+  #Inbound Rules
+  inboundrule1:
+    number: 100
+    action: allow
+    protocol: 6
+    cidr: 0.0.0.0/0
+    egress: false
+    from: 32768
+    to: 65535
+  inboundrule2:
+    number: 200
+    action: allow
+    protocol: 6
+    cidr: 0.0.0.0/0
+    egress: false
+    from: 80
+    to: 80
+  inboundrule3:
+    number: 300
+    action: allow
+    protocol: 6
+    cidr: 0.0.0.0/0
+    egress: false
+    from: 443
+    to: 443
+  #outbound Rules
+  outboundrule1:
+    number: 100
+    action: allow
+    protocol: -1
+    cidr: 0.0.0.0/0
+    egress: true
+    from: -1
+    to: -1
+application_nacl_name: application-network-01
+application_nacl_rules:
+  #Inbound Rules
+  inboundrule1:
+    number: 100
+    action: allow
+    protocol: 6
+    cidr: 0.0.0.0/0
+    egress: false
+    from: 32768
+    to: 65535
+  inboundrule2:
+    number: 200
+    action: allow
+    protocol: 6
+    cidr: 10.0.1.0/24
+    egress: false
+    from: 80
+    to: 80
+  inboundrule3:
+    number: 300
+    action: allow
+    protocol: 6
+    cidr: 10.0.2.0/24
+    egress: false
+    from: 80
+    to: 80
+  inboundrule4:
+    number: 400
+    action: allow
+    protocol: 6
+    cidr: 10.0.1.0/24
+    egress: false
+    from: 443
+    to: 443
+  inboundrule5:
+    number: 500
+    action: allow
+    protocol: 6
+    cidr: 10.0.2.0/24
+    egress: false
+    from: 443
+    to: 443
+  inboundrule6:
+    number: 600
+    action: allow
+    protocol: -1
+    cidr: 10.0.3.0/24
+    egress: false
+    from: -1
+    to: -1
+  inboundrule7:
+    number: 700
+    action: allow
+    protocol: -1
+    cidr: 10.0.4.0/24
+    egress: false
+    from: -1
+    to: -1
+  #outbound Rules
+  outboundrule1:
+    number: 100
+    action: allow
+    protocol: -1
+    cidr: 0.0.0.0/0
+    egress: true
+    from: -1
+    to: -1
+database_nacl_name: database-network-01
+database_nacl_rules:
+  #Inbound Rules
+  inboundrule1:
+    number: 100
+    action: allow
+    protocol: 6
+    cidr: 0.0.0.0/0
+    egress: false
+    from: 1024
+    to: 65535
+  inboundrule2:
+    number: 200
+    action: allow
+    protocol: 6
+    cidr: 10.0.3.0/24
+    egress: false
+    from: 3306
+    to: 3306
+  inboundrule3:
+    number: 300
+    action: allow
+    protocol: 6
+    cidr: 10.0.4.0/24
+    egress: false
+    from: 3306
+    to: 3306
+  inboundrule4:
+    number: 400
+    action: allow
+    protocol: -1
+    cidr: 10.0.5.0/24
+    egress: false
+    from: -1
+    to: -1
+  inboundrule5:
+    number: 500
+    action: allow
+    protocol: -1
+    cidr: 10.0.6.0/24
+    egress: false
+    from: -1
+    to: -1
+  #outbound Rules
+  outboundrule1:
+    number: 100
+    action: allow
+    protocol: -1
+    cidr: 0.0.0.0/0
+    egress: true
+    from: -1
+    to: -1
