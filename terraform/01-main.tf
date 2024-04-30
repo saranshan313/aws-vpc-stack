@@ -13,7 +13,6 @@ provider "aws" {
     tags = {
       region = local.settings.region
       env    = local.settings.env
-      owner  = "mohanraj.loganathan@slalom.com"
     }
   }
 }
