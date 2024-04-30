@@ -11,25 +11,25 @@ public_subnets:
   public_subneta:
     cidr: 10.0.1.0/24
     availability_zone: ap-southeast-2a
-    name: publica-01
+    name: public-zonea-01
     map_public_ip_on_launch: true
   public_subnetb:
     cidr: 10.0.2.0/24
     availability_zone: ap-southeast-2b
-    name: publicb-01
+    name: public-zoneb-01
     map_public_ip_on_launch: true
 
 application_subnets:
   application_subneta:
     cidr: 10.0.3.0/24
     availability_zone: ap-southeast-2a
-    name: applicationa-01
+    name: application-zonea-01
     map_public_ip_on_launch: false
     nat_gateway: subneta
   application_subnetb:
     cidr: 10.0.4.0/24
     availability_zone: ap-southeast-2b
-    name: applicationb-01
+    name: application-zoneb-01
     map_public_ip_on_launch: false
     nat_gateway: subnetb
 
@@ -37,13 +37,13 @@ database_subnets:
   database_subneta:
     cidr: 10.0.5.0/24
     availability_zone: ap-southeast-2a
-    name: databasea-01
+    name: database-zonea-01
     map_public_ip_on_launch: false
     nat_gateway: subneta
   database_subnetb:
     cidr: 10.0.6.0/24
     availability_zone: ap-southeast-2b
-    name: databaseb-01
+    name: database-zoneb-01
     map_public_ip_on_launch: false
     nat_gateway: subnetb
 public_nacl_name: public-network-01
