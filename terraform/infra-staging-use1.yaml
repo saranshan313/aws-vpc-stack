@@ -55,7 +55,7 @@ public_nacl_rules:
     protocol: 6
     cidr: 0.0.0.0/0
     egress: false
-    from: 32768
+    from: 1024
     to: 65535
   inboundrule2:
     number: 200
@@ -91,7 +91,7 @@ application_nacl_rules:
     protocol: 6
     cidr: 0.0.0.0/0
     egress: false
-    from: 32768
+    from: 1024
     to: 65535
   inboundrule2:
     number: 200
