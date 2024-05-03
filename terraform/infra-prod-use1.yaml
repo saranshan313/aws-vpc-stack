@@ -52,7 +52,7 @@ public_nacl_rules:
   inboundrule1:
     number: 100
     action: allow
-    protocol: 6
+    protocol: -1
     cidr: 0.0.0.0/0
     egress: false
     from: 1024
@@ -88,7 +88,7 @@ application_nacl_rules:
   inboundrule1:
     number: 100
     action: allow
-    protocol: 6
+    protocol: -1
     cidr: 0.0.0.0/0
     egress: false
     from: 1024
@@ -140,7 +140,7 @@ database_nacl_rules:
   inboundrule1:
     number: 100
     action: allow
-    protocol: 6
+    protocol: -1
     cidr: 0.0.0.0/0
     egress: false
     from: 1024
