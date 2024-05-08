@@ -1,4 +1,4 @@
-region: use1
+region: apse2
 env: staging
 
 #ECS VPC attributes
@@ -10,25 +10,25 @@ vpc_name: net-01
 public_subnets:
   public_subneta:
     cidr: 10.0.1.0/24
-    availability_zone: us-east-1a
+    availability_zone: ap-southeast-2a
     name: public-zonea-01
     map_public_ip_on_launch: true
   public_subnetb:
     cidr: 10.0.2.0/24
-    availability_zone: us-east-1b
+    availability_zone: ap-southeast-2b
     name: public-zoneb-01
     map_public_ip_on_launch: true
 
 application_subnets:
   application_subneta:
     cidr: 10.0.3.0/24
-    availability_zone: us-east-1a
+    availability_zone: ap-southeast-2a
     name: application-zonea-01
     map_public_ip_on_launch: false
     nat_gateway: subneta
   application_subnetb:
     cidr: 10.0.4.0/24
-    availability_zone: us-east-1b
+    availability_zone: ap-southeast-2b
     name: application-zoneb-01
     map_public_ip_on_launch: false
     nat_gateway: subnetb
@@ -36,13 +36,13 @@ application_subnets:
 database_subnets:
   database_subneta:
     cidr: 10.0.5.0/24
-    availability_zone: us-east-1a
+    availability_zone: ap-southeast-2a
     name: database-zonea-01
     map_public_ip_on_launch: false
     nat_gateway: subneta
   database_subnetb:
     cidr: 10.0.6.0/24
-    availability_zone: us-east-1b
+    availability_zone: ap-southeast-2b
     name: database-zoneb-01
     map_public_ip_on_launch: false
     nat_gateway: subnetb
@@ -88,7 +88,7 @@ application_nacl_rules:
   inboundrule1:
     number: 100
     action: allow
-    protocol: -1
+    protocol: 6
     cidr: 0.0.0.0/0
     egress: false
     from: 1024
