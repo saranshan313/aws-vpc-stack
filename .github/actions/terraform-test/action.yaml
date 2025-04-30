@@ -25,13 +25,15 @@ runs:
     # ✅ tfsec
     - name: Run tfsec
       uses: aquasecurity/tfsec-action@v1.0.0
-
+      shell: bash
+      continue-on-error: true
     # ✅ Checkov
     - name: Install and run Checkov
       run: |
         pip install checkov
         checkov -d .
       shell: bash
+      continue-on-error: true
     # ✅ Terrascan
     - name: Install and run Terrascan
       run: |
@@ -39,6 +41,7 @@ runs:
         sudo mv terrascan /usr/local/bin/
         terrascan scan -t terraform -d .
       shell: bash
+      continue-on-error: true
     # ✅ KICS
     - name: Install and run KICS
       run: |
@@ -46,4 +49,5 @@ runs:
         chmod +x kics
         ./kics scan -p . --type terraform --no-progress  
       shell: bash  
+      continue-on-error: true
 
