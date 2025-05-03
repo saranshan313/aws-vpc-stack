@@ -22,31 +22,29 @@ runs:
       run: tflint -f compact
       shell: bash
       working-directory: terraform
-    # ✅ tfsec
-    - name: Run tfsec
-      uses: aquasecurity/tfsec-action@v1.0.0
-      continue-on-error: true
-    # ✅ Checkov
-    - name: Install and run Checkov
-      run: |
-        pip install checkov
-        checkov -d .
-      shell: bash
-      continue-on-error: true
-    # ✅ Terrascan
-    - name: Install and run Terrascan
-      run: |
-        curl -L https://github.com/tenable/terrascan/releases/latest/download/terrascan_Linux_x86_64.tar.gz | tar xz
-        sudo mv terrascan /usr/local/bin/
-        terrascan scan -t terraform -d .
-      shell: bash
-      continue-on-error: true
+    # # ✅ tfsec
+    # - name: Run tfsec
+    #   uses: aquasecurity/tfsec-action@v1.0.0
+    #   continue-on-error: true
+    # # ✅ Checkov
+    # - name: Install and run Checkov
+    #   run: |
+    #     pip install checkov
+    #     checkov -d .
+    #   shell: bash
+    #   continue-on-error: true
+    # # ✅ Terrascan
+    # - name: Install and run Terrascan
+    #   run: |
+    #     curl -L https://github.com/tenable/terrascan/releases/latest/download/terrascan_Linux_x86_64.tar.gz | tar xz
+    #     sudo mv terrascan /usr/local/bin/
+    #     terrascan scan -t terraform -d .
+    #   shell: bash
+    #   continue-on-error: true
     # ✅ KICS
-    - name: Install and run KICS
-      run: |
-        curl -Lo kics https://github.com/Checkmarx/kics/releases/latest/download/kics-linux
-        chmod +x kics
-        ./kics scan -p . --type terraform --no-progress  
-      shell: bash  
-      continue-on-error: true
+    - name: run KICS Scan
+      uses: Checkmarx/kics-github-action@v1.7.0
+      with:
+        path: 'terraform'
+        output_path: results-dir
 

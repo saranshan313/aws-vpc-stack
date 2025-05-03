@@ -55,8 +55,8 @@ jobs:
      - name: 'Check and Validate - ${{ vars.ENVIRONMENT }}'
        uses: ./.github/actions/terraform-test
     
-     - name: Manual Approval (for Apply)
-       uses: hmarr/auto-approve-action@v2
+    #  - name: Manual Approval (for Apply)
+    #    uses: hmarr/auto-approve-action@v2
 
      - name: 'Deploy to ${{ vars.ENVIRONMENT }}'
        uses: ./.github/actions/terraform-apply
