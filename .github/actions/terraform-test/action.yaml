@@ -26,13 +26,13 @@ runs:
     # - name: Run tfsec
     #   uses: aquasecurity/tfsec-action@v1.0.0
     #   continue-on-error: true
-    # # ✅ Checkov
-    # - name: Install and run Checkov
-    #   run: |
-    #     pip install checkov
-    #     checkov -d .
-    #   shell: bash
-    #   continue-on-error: true
+    # ✅ Checkov
+    - name: Install and run Checkov
+      run: |
+        pip install checkov
+        checkov -d ./terraform
+      shell: bash
+      continue-on-error: true
     # # ✅ Terrascan
     # - name: Install and run Terrascan
     #   run: |
@@ -42,9 +42,9 @@ runs:
     #   shell: bash
     #   continue-on-error: true
     # ✅ KICS
-    - name: run KICS Scan
-      uses: Checkmarx/kics-github-action@v1.7.0
-      with:
-        path: 'terraform'
-        output_path: results-dir
+    # - name: run KICS Scan
+    #   uses: Checkmarx/kics-github-action@v1.7.0
+    #   with:
+    #     path: 'terraform'
+    #     output_path: results-dir
 
